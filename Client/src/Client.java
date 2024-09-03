@@ -1,16 +1,25 @@
 import java.io.DataInputStream;
 import java.net.Socket;
+import java.util.Scanner;
 // Application client
 
 public class Client {
     private static Socket socket;
     public static void main(String[] args) throws Exception {
-        // Adresse et port du serveur
-        String serverAddress = "127.0.0.1";
-        int port = 5000;
+        // Adress of the server 
+        Scanner serverAddressScanner = new Scanner(System.in);  
+        System.out.println("Enter server adress : ");
+        String serverAddress = serverAddressScanner.nextLine();  
+
+        // Port of the server 
+        Scanner portScanner = new Scanner(System.in); 
+        System.out.println("Enter server port : ");
+        String serverPortString = portScanner.nextLine();  
+        int serverPort = Integer.parseInt(serverPortString);
+
         // Création d'une nouvelle connexion aves le serveur
-        socket = new Socket(serverAddress, port);
-        System.out.format("Serveur lancé sur [%s:%d]", serverAddress, port);
+        socket = new Socket(serverAddress, serverPort);
+        System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
         // Céatien d'un canal entrant pour recevoir les messages envoyés, par le serveur
         DataInputStream in = new DataInputStream(socket.getInputStream());
         // Attente de la réception d'un message envoyé par le, server sur le canal

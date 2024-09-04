@@ -1,6 +1,6 @@
 public class FormatCombined {
 
-    public boolean isValid(Integer portValue, String IPValue) {
+    public boolean isValid(int portValue, String IPValue) throws Exception {
         FormatIP ipObj = new FormatIP();
         FormatPort portObj = new FormatPort();
         Boolean ipValidity = ipObj.isValid(IPValue);

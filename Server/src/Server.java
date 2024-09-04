@@ -1,6 +1,8 @@
+import java.awt.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+
 
 
 public class Server {
@@ -13,6 +15,14 @@ public class Server {
         // Adresse et port du serveur
         String serverAddress = "127.0.0.1";
         int serverPort = 5000;
+        FormatCombined formatObj = new FormatCombined();
+        try{
+            formatObj.isValid(serverPort, serverAddress);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
         // Création de la connexien pour communiquer ave les clients
         Listener = new ServerSocket();
         Listener.setReuseAddress(true);

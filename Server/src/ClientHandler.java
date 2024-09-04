@@ -1,5 +1,6 @@
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 
 public class ClientHandler extends Thread {
@@ -15,8 +16,17 @@ public class ClientHandler extends Thread {
 
     public void run() { // Création de thread qui envoi un message à un client
         try {
-            DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi
-            out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
+//            DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi
+//            out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
+            System.out.println("Enter run");
+            while(true) {
+                InputStream in = socket.getInputStream();
+                int readResult;
+                readResult = in.read();
+                if (readResult != -1) {
+                    System.out.println(readResult);
+                }
+            }
         } catch (IOException e) {
             System.out.println("Error handling client# " + clientNumber + ": " + e);
         } finally {

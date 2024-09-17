@@ -1,36 +1,50 @@
 import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.OutputStream;
+import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.Scanner;
 // Application client
 
 public class Client {
     private static Socket socket;
     public static void main(String[] args) throws Exception {
-        // Adresse et port du serveur
-        String serverAddress = "127.0.0.1";
-        int port = 5000;
-        // Création d'une nouvelle connexion aves le serveur
-        socket = new Socket(serverAddress, port);
-        System.out.format("Serveur lancé sur [%s:%d]", serverAddress, port);
-        // Céatien d'un canal entrant pour recevoir les messages envoyés, par le serveur
-//        DataInputStream in = new DataInputStream(socket.getInputStream());
-        // Attente de la réception d'un message envoyé par le, server sur le canal
-//        String helloMessageFromServer = in.readUTF();
-//        System.out.println(helloMessageFromServer);
+        Scanner scanner = new Scanner(System.in);
 
-        OutputStream fileOut = socket.getOutputStream();
-        String filename = "./Client/src/data.txt";
-        FileInputStream fileIn = new FileInputStream(filename);
-        byte[] buffer = new byte[1024];
-        int bytesRead = 0;
+        // Adress of the server
+        System.out.println("Enter server adress : ");
+        String serverAddress = scanner.nextLine();
 
-        System.out.println("Sending file");
-        while ((bytesRead = fileIn.read(buffer)) != -1) {
-            fileOut.write(buffer, 0, bytesRead);
+        // Port of the server
+        System.out.println("Enter server port : ");
+        String serverPortString = scanner.nextLine();
+        int serverPort = Integer.parseInt(serverPortString);
+
+        // New cnnection with the server
+        socket = new Socket(serverAddress, serverPort);
+        System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
+
+        // Input and output streams to recieve and send datas to the server
+        DataInputStream in = new DataInputStream(socket.getInputStream());
+        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+        while (true) {
+            System.out.println("Enter command : ");
+            String command = scanner.nextLine();
+
+            // Sending the command to the server
+            out.writeUTF(command);
+            out.flush();
+            System.out.println("Command sent. Waiting for response...");
+            String helloMessageFromServer = in.readUTF();
+            System.out.println(helloMessageFromServer);
+
+
+            if(command.equalsIgnoreCase("exit")) {
+                break;
+            }
+
         }
 
-
-
-        // fermeture de La connexion avec le serveur
-        socket.close(); } }
+        // closing the connection with the server
+        socket.close();
+    }
+}

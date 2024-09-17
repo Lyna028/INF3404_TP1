@@ -1,6 +1,6 @@
 import java.io.DataOutputStream;
+import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
 
 public class ClientHandler extends Thread {
@@ -10,23 +10,33 @@ public class ClientHandler extends Thread {
     public ClientHandler(Socket socket, int clientNumber) {
         this.socket = socket;
         this.clientNumber = clientNumber;
-        System.out.println("New connection with client#" + clientNumber + " at" + socket);
+
     }
 
 
-    public void run() { // Création de thread qui envoi un message à un client
+    public void run(){ // Création de thread qui envoi un message à un client
         try {
-//            DataOutputStream out = new DataOutputStream(socket.getOutputStream()); // création de canal d’envoi
-//            out.writeUTF("Hello from server - you are client#" + clientNumber); // envoi de message
-            System.out.println("Enter run");
-            while(true) {
-                InputStream in = socket.getInputStream();
-                int readResult;
-                readResult = in.read();
-                if (readResult != -1) {
-                    System.out.println(readResult);
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            System.out.println("Streams successfully opened for client#" + clientNumber);
+
+
+            while (true) {
+                // Read the message from the client
+                String clientMessage = in.readUTF();
+
+                // If the client sends "exit", close the connection
+                if (clientMessage.equalsIgnoreCase("exit")) {
+                    break;
                 }
+
+                // Send a response back to the client
+                out.writeUTF("Server received: " + clientMessage);
+                out.flush();
+                System.out.println("Response sent to client#" + clientNumber);
+
             }
+
         } catch (IOException e) {
             System.out.println("Error handling client# " + clientNumber + ": " + e);
         } finally {

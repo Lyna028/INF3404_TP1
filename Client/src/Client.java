@@ -15,7 +15,7 @@ public class Client {
 
         // Port of the server 
         System.out.println("Enter server port : ");
-        String serverPortString = scanner.nextLine();  
+        String serverPortString = scanner.nextLine();
         int serverPort = Integer.parseInt(serverPortString);
 
         // New cnnection with the server
@@ -33,12 +33,15 @@ public class Client {
             // Sending the command to the server 
             out.writeUTF(command);
             out.flush();
-            
-            if(command == "exit") {
-                break;
-            }
+            System.out.println("Command sent. Waiting for response...");
             String helloMessageFromServer = in.readUTF();
             System.out.println(helloMessageFromServer);
+
+
+            if(command.equalsIgnoreCase("exit")) {
+                break;
+            }
+
         }
         
         // closing the connection with the server 

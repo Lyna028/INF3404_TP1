@@ -7,13 +7,13 @@ import java.util.Scanner;
 public class Client {
     private static Socket socket;
     public static void main(String[] args) throws Exception {
-        Scanner scanner = new Scanner(System.in); 
+        Scanner scanner = new Scanner(System.in);
 
-        // Adress of the server  
+        // Adress of the server
         System.out.println("Enter server adress : ");
-        String serverAddress = scanner.nextLine();  
+        String serverAddress = scanner.nextLine();
 
-        // Port of the server 
+        // Port of the server
         System.out.println("Enter server port : ");
         String serverPortString = scanner.nextLine();
         int serverPort = Integer.parseInt(serverPortString);
@@ -22,7 +22,7 @@ public class Client {
         socket = new Socket(serverAddress, serverPort);
         System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
 
-        // Input and output streams to recieve and send datas to the server 
+        // Input and output streams to recieve and send datas to the server
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
@@ -30,8 +30,7 @@ public class Client {
             System.out.println("Enter command : ");
             String command = scanner.nextLine();
 
-            // Sending the command to the server 
-            //if (command.startsWith("mkdir"))
+            // Sending the command to the server
             out.writeUTF(command);
             out.flush();
             System.out.println("Command sent. Waiting for response...");
@@ -44,8 +43,8 @@ public class Client {
             }
 
         }
-        
-        // closing the connection with the server 
-        socket.close(); 
-    } 
+
+        // closing the connection with the server
+        socket.close();
+    }
 }

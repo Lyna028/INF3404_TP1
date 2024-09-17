@@ -17,6 +17,8 @@ public class Server {
     private static Socket socket;
     // Application Serveur
 
+    private static FileManager fm;
+
 
 
     public static void main(String[] args) throws Exception {
@@ -64,6 +66,10 @@ public class Server {
                 String dirName = commandParts[1];
 
                 // Switch case
+                switch(cmdName) {
+                    case "ls" :
+                        FileManager.listDirectory();
+                }
 
             }
         } finally {

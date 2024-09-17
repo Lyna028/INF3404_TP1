@@ -3,14 +3,12 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 
-
-
 public class Server {
     private static ServerSocket Listener;
     // Application Serveur
 
     public static void main(String[] args) throws Exception {
-        // Compteur incrémenté à chaque connexion d'un client au serveur
+        // Compteur incrémenté à *chaque connexion d'un client au serveur
         int clientNumber = 0;
         // Adresse et port du serveur
         String serverAddress = "127.0.0.1";
@@ -41,7 +39,9 @@ public class Server {
         } finally {
             // Fermeture de la connexion
             Listener.close();
-        }  }  } // pour traiter la demande de chaque client sur un socket particulier
+        }  
+    }  
+} // pour traiter la demande de chaque client sur un socket particulier
 
 
 

@@ -31,6 +31,7 @@ public class Client {
             String command = scanner.nextLine();
 
             // Sending the command to the server 
+            //if (command.startsWith("mkdir"))
             out.writeUTF(command);
             out.flush();
             

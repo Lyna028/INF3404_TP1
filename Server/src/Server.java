@@ -58,6 +58,7 @@ public class Server {
             while (true) {
                 // Important : la fonction accept() est bloquante: attend qu'un prochain client se connecte
                 // Une nouvetle connection : on incémente le compteur clientNumber
+
                 new ClientHandler(Listener.accept(), clientNumber++).start();
 
             }

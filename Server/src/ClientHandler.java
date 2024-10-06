@@ -13,6 +13,7 @@ public class ClientHandler extends Thread {
     public ClientHandler(Socket socket, int clientNumber) {
         this.socket = socket;
         this.clientNumber = clientNumber;
+        this.fileManager = new FileManager();
     }
 
     public void run(){ // Création de thread qui envoi un message à un client
@@ -24,7 +25,7 @@ public class ClientHandler extends Thread {
             while (true) {
                 // Read the message from the client
                 String clientMessage = in.readUTF();
-                String[] commandParts = clientMessage.split(" ", 2);
+                String[] commandParts = clientMessage.split(" ",2);
                 String cmdName = commandParts[0];
                 String arg = (commandParts.length > 1) ? commandParts[1] : null;
 
@@ -34,8 +35,13 @@ public class ClientHandler extends Thread {
                         break;
 
                     case "cd":
-                        fileManager.changeDirectory(arg);
-                        out.writeUTF("Vous etes dans le dossier " + arg);
+                        if(arg != null) {
+                            String result = fileManager.changeDirectory(arg);
+                            out.writeUTF("Vous etes dans le dossier " + result);
+                        }
+                        else{
+                            out.writeUTF("Spécifiez le dossier");
+                        }
                         break;
 
                     case "mkdir":
@@ -60,9 +66,6 @@ public class ClientHandler extends Thread {
                 }
                 out.flush();
 
-                // Send a response back to the client
-                out.writeUTF("Server received: " + clientMessage);
-                out.flush();
                 System.out.println("Response sent to client#" + clientNumber);
 
             }

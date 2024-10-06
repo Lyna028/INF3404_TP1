@@ -30,17 +30,16 @@ public class Client {
             System.out.println("Enter command : ");
             String command = scanner.nextLine();
 
+            if(command.equalsIgnoreCase("exit")) {
+                break;
+            }
+
             // Sending the command to the server
             out.writeUTF(command);
             out.flush();
             System.out.println("Command sent. Waiting for response...");
             String helloMessageFromServer = in.readUTF();
             System.out.println(helloMessageFromServer);
-
-
-            if(command.equalsIgnoreCase("exit")) {
-                break;
-            }
 
         }
 

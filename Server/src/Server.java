@@ -60,17 +60,6 @@ public class Server {
                 // Une nouvetle connection : on incémente le compteur clientNumber
                 new ClientHandler(Listener.accept(), clientNumber++).start();
 
-                String command = in.readUTF();
-                String[] commandParts = command.split(" ", 2);
-                String cmdName = commandParts[0];
-                String dirName = commandParts[1];
-
-                // Switch case
-                switch(cmdName) {
-                    case "ls" :
-                        FileManager.listDirectory();
-                }
-
             }
         } finally {
             // Fermeture de la connexion

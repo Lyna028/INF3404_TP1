@@ -2,27 +2,40 @@ import java.io.File;
 
 public class FileManager {
     private File currentDir;
+    private File stockDir;
 
     public FileManager() {
-        this.currentDir = new File(".");
+        this.stockDir = new File(".");
+        this.currentDir = new File(stockDir,"serverStockage");
+        this.currentDir.mkdirs();
     }
 
     public String getCurrentDirectory() {
         return this.currentDir.getPath();
     }
 
-    public void changeDirectory(String dirName) {
-        if (dirName.equals("..")) {
-            File parentDir = currentDir.getParentFile();
-            currentDir = parentDir;
-        } else {
-            File newDir = new File(currentDir, dirName);
-            if (newDir.exists()) {
-                currentDir = newDir;
+    public String changeDirectory(String dirName) {
+            if (dirName.equals("..")) {
+                if(currentDir.getName().equals("serverStockage")){
+                    System.out.println(currentDir.getName());
+                    return currentDir.getName();
+                }
+                else {
+                    File parentDir = currentDir.getParentFile();
+                    currentDir = parentDir;
+                    return parentDir.getName();
+                }
             } else {
-                System.out.println("Directory does not exist: " + dirName);
+                File newDir = new File(currentDir, dirName);
+                if (newDir.exists()) {
+                    currentDir = newDir;
+                    return dirName;
+                } else {
+                    return "Directory " + dirName + " does not exist";
+
+                }
             }
-        }
+
     }
 
     /**

@@ -3,6 +3,8 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ClientHandler extends Thread {
     private Socket socket;
@@ -77,5 +79,20 @@ public class ClientHandler extends Thread {
             }
             System.out.println("Connection with client# " + clientNumber + " closed");
         }
+    }
+
+    public void printUserCommand(String clientMessage) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd@HH:mm:ss");
+
+        String formattedDateTime = now.format(formatter);
+
+        System.out.printf(
+                "[%s:%d - %s] : %s",
+                socket.getInetAddress(),
+                socket.getPort(),
+                now.format(formatter),
+                clientMessage
+        );
     }
 }

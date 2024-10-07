@@ -27,6 +27,8 @@ public class ClientHandler extends Thread {
             while (true) {
                 // Read the message from the client
                 String clientMessage = in.readUTF();
+                printUserCommand(clientMessage);
+
                 String[] commandParts = clientMessage.split(" ",2);
                 String cmdName = commandParts[0];
                 String arg = (commandParts.length > 1) ? commandParts[1] : null;

@@ -93,8 +93,8 @@ public class ClientHandler extends Thread {
         String formattedDateTime = now.format(formatter);
 
         System.out.printf(
-                "[%s:%d - %s] : %s",
-                socket.getInetAddress(),
+                "[%s:%d - %s] : %s\n",
+                socket.getInetAddress().getHostAddress(),
                 socket.getPort(),
                 now.format(formatter),
                 clientMessage

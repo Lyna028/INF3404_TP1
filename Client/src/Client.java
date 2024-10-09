@@ -1,5 +1,7 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Scanner;
 // Application client
@@ -10,40 +12,91 @@ public class Client {
         Scanner scanner = new Scanner(System.in);
 
         // Adress of the server
-        System.out.println("Enter server adress : ");
+        System.out.print("Enter server adress : ");
         String serverAddress = scanner.nextLine();
 
         // Port of the server
-        System.out.println("Enter server port : ");
+        System.out.print("Enter server port : ");
         String serverPortString = scanner.nextLine();
         int serverPort = Integer.parseInt(serverPortString);
 
         // New cnnection with the server
         socket = new Socket(serverAddress, serverPort);
-        System.out.format("Serveur lancé sur [%s:%d]", serverAddress, serverPort);
+        System.out.format("Serveur lancé sur [%s:%d]\n", serverAddress, serverPort);
 
         // Input and output streams to recieve and send datas to the server
         DataInputStream in = new DataInputStream(socket.getInputStream());
         DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
         while (true) {
-            System.out.println("Enter command : ");
+            System.out.print("Enter command : ");
             String command = scanner.nextLine();
 
             if(command.equalsIgnoreCase("exit")) {
                 break;
             }
 
-            // Sending the command to the server
-            out.writeUTF(command);
-            out.flush();
-            System.out.println("Command sent. Waiting for response...");
-            String helloMessageFromServer = in.readUTF();
-            System.out.println(helloMessageFromServer);
+            String[] commandParts = command.split(" ");
+            FileIOHandler fileIOHandler = new FileIOHandler();
 
+            switch (commandParts[0]) {
+                case "upload":
+                    File fileToUpload = new File(commandParts[1]);
+                    if (!fileToUpload.exists() || !fileToUpload.isFile()) {
+                        System.out.println("File does not exist or is a folder.");
+                        continue;
+                    }
+
+                    out.writeUTF(commandParts[0] + " " + fileToUpload.getName());
+
+                    if (!fileIOHandler.readFile(fileToUpload, out))
+                        continue;
+
+                    waitServerRes(in);
+                    break;
+
+                case "download":
+                    File fileToDownload = new File(commandParts[1]);
+                    out.writeUTF(commandParts[0] + " " + fileToDownload.getName());
+
+                    if (!fileIOHandler.writeFile(fileToDownload, in))
+                        continue;
+
+                    waitServerRes(in);
+                    break;
+
+                case "cd":
+                case "ls":
+                case "mkdir":
+                case "delete":
+                    // Sending the command to the server
+                    out.writeUTF(command);
+                    out.flush();
+                    waitServerRes(in);
+
+                    break;
+
+                default:
+                    System.out.println("Commande invalide");
+            }
         }
 
         // closing the connection with the server
         socket.close();
     }
+
+    /**
+     * Waits for server response after sending the command
+     * @param in Stream of the socket connected to the server
+     */
+    private static void waitServerRes(DataInputStream in) {
+        try {
+            System.out.println("Command sent. Waiting for response...");
+            String serverResponse = in.readUTF();
+            System.out.println(serverResponse);
+        } catch (IOException e) {
+            System.out.println("Error sending command: " + e);
+        }
+    }
+
 }

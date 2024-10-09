@@ -3,6 +3,13 @@ import java.io.*;
 public class FileIOHandler {
     public FileIOHandler() { }
 
+    /**
+     * Writes into the file the data sent through the input stream (in this case a socket stream)
+     *
+     * @param file The File object where the data from socketStream should be written
+     * @param socketStream The socket stream used to send the file data.
+     * @return true if the file was written successfully, false otherwise
+     */
     public boolean writeFile(File file, DataInputStream socketStream) {
         if (file.isDirectory()) {
             System.out.println("File passed is a directory");
@@ -39,6 +46,13 @@ public class FileIOHandler {
         return true;
     }
 
+    /**
+     * Writes into the output stream (in this case a socket stream) the data written in a file
+     *
+     * @param file The file that has to be transfered through the socketStream
+     * @param socketStream The socket stream used to send the file data.
+     * @return true if transfer was done successfully, false otherwise
+     */
     public boolean readFile(File file, DataOutputStream socketStream) {
         if (file.isDirectory()) {
             System.out.println("File passed is a directory");
@@ -49,6 +63,8 @@ public class FileIOHandler {
         int len;
 
         long fileSize = file.length();
+        long totalRead = 0;
+
         try {
             socketStream.writeLong(fileSize);
         } catch (IOException e) {
@@ -59,9 +75,11 @@ public class FileIOHandler {
         try (// Try-with-resources
              FileInputStream fileToRead = new FileInputStream(file)) {
             do {
-                len = fileToRead.read(buffer, 0, UploadConstants.BUFFER_SIZE);
+                len = fileToRead.read(buffer, 0, Math.min(UploadConstants.BUFFER_SIZE, (int)(fileSize - totalRead)));
                 socketStream.write(buffer, 0, len);
-            } while (len > 0);
+
+                totalRead += len;
+            } while (totalRead < fileSize && len > 0);
 
         } catch (IOException e) {
             System.out.printf("Error during transfer from file %s : %s", file.getName(), e.toString());

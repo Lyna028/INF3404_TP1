@@ -16,6 +16,7 @@ public class ClientHandler extends Thread {
         this.socket = socket;
         this.clientNumber = clientNumber;
         this.fileManager = new FileManager();
+        this.fileIOHandler = new FileIOHandler();
     }
 
     public void run(){ // Création de thread qui envoi un message à un client
@@ -56,11 +57,13 @@ public class ClientHandler extends Thread {
                     case "upload":
                         File fileToUpload = new File(fileManager.getCurrentDirectory(), arg);
                         fileIOHandler.writeFile(fileToUpload, in);
+                        out.writeUTF("Le fichier " + arg + " a bien été téléversé.\n");
                         break;
 
                     case "download":
                         File fileToDownload = new File(fileManager.getCurrentDirectory(), arg);
                         fileIOHandler.readFile(fileToDownload, out);
+                        out.writeUTF("Le fichier " + arg + " a bien été téléchargé.\n");
                         break;
 
                     case "delete":
@@ -86,6 +89,11 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Prints a command received from the client with the format:
+     * [Client IP : Client Port - Date and time (min, sec)] : Command
+     * @param clientMessage Message sent by the client that has to be printed
+     */
     public void printUserCommand(String clientMessage) {
         LocalDateTime now = LocalDateTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd@HH:mm:ss");

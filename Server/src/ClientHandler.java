@@ -3,6 +3,8 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ClientHandler extends Thread {
     private Socket socket;
@@ -14,6 +16,7 @@ public class ClientHandler extends Thread {
         this.socket = socket;
         this.clientNumber = clientNumber;
         this.fileManager = new FileManager();
+        this.fileIOHandler = new FileIOHandler();
     }
 
     public void run(){ // Création de thread qui envoi un message à un client
@@ -25,6 +28,8 @@ public class ClientHandler extends Thread {
             while (true) {
                 // Read the message from the client
                 String clientMessage = in.readUTF();
+                printUserCommand(clientMessage);
+
                 String[] commandParts = clientMessage.split(" ",2);
                 String cmdName = commandParts[0];
                 String arg = (commandParts.length > 1) ? commandParts[1] : null;
@@ -52,11 +57,13 @@ public class ClientHandler extends Thread {
                     case "upload":
                         File fileToUpload = new File(fileManager.getCurrentDirectory(), arg);
                         fileIOHandler.writeFile(fileToUpload, in);
+                        out.writeUTF("Le fichier " + arg + " a bien été téléversé.\n");
                         break;
 
                     case "download":
                         File fileToDownload = new File(fileManager.getCurrentDirectory(), arg);
                         fileIOHandler.readFile(fileToDownload, out);
+                        out.writeUTF("Le fichier " + arg + " a bien été téléchargé.\n");
                         break;
 
                     case "delete":
@@ -80,5 +87,25 @@ public class ClientHandler extends Thread {
             }
             System.out.println("Connection with client# " + clientNumber + " closed");
         }
+    }
+
+    /**
+     * Prints a command received from the client with the format:
+     * [Client IP : Client Port - Date and time (min, sec)] : Command
+     * @param clientMessage Message sent by the client that has to be printed
+     */
+    public void printUserCommand(String clientMessage) {
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd@HH:mm:ss");
+
+        String formattedDateTime = now.format(formatter);
+
+        System.out.printf(
+                "[%s:%d - %s] : %s\n",
+                socket.getInetAddress().getHostAddress(),
+                socket.getPort(),
+                now.format(formatter),
+                clientMessage
+        );
     }
 }

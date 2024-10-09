@@ -17,7 +17,6 @@ public class FileManager {
     public String changeDirectory(String dirName) {
             if (dirName.equals("..")) {
                 if(currentDir.getName().equals("serverStockage")){
-                    System.out.println(currentDir.getName());
                     return currentDir.getName();
                 }
                 else {

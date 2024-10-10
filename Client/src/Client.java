@@ -11,18 +11,14 @@ public class Client {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
 
-        // Adress of the server
-        System.out.print("Enter server adress : ");
-        String serverAddress = scanner.nextLine();
+        int clientNumber = 0;
 
-        // Port of the server
-        System.out.print("Enter server port : ");
-        String serverPortString = scanner.nextLine();
-        int serverPort = Integer.parseInt(serverPortString);
+        IdentifiantServeur idsServeur = new IdentifiantServeur();
+        idsServeur.connexionValidity();
 
         // New cnnection with the server
-        socket = new Socket(serverAddress, serverPort);
-        System.out.format("Serveur lancé sur [%s:%d]\n", serverAddress, serverPort);
+        socket = new Socket(idsServeur.ipValue, idsServeur.portValue);
+        System.out.format("Serveur lancé sur [%s:%d]\n", idsServeur.ipValue, idsServeur.portValue);
 
         // Input and output streams to recieve and send datas to the server
         DataInputStream in = new DataInputStream(socket.getInputStream());

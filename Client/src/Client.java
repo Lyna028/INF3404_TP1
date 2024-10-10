@@ -6,6 +6,12 @@ import java.net.Socket;
 import java.util.Scanner;
 // Application client
 
+/**
+ * Client that connects to a server, sends commands, and processes the server's responses.
+ * It allows users to interact with a remote file system, supporting commands such as
+ * uploading files, downloading files, changing directories, listing files, creating directories,
+ * and deleting files. The client runs in a loop, continuously accepting user input until the user types "exit".
+ */
 public class Client {
     private static Socket socket;
     public static void main(String[] args) throws Exception {
@@ -73,7 +79,6 @@ public class Client {
                     out.writeUTF(command);
                     out.flush();
                     waitServerRes(in);
-
                     break;
 
                 default:

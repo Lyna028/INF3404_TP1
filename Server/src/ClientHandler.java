@@ -6,12 +6,23 @@ import java.net.Socket;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Responsible for handling communication between the server and a client.
+ * The class processes various commands from the client, including file system operations
+ * such as listing directories, changing directories, creating directories, uploading files,
+ * downloading files, and deleting files.
+ */
 public class ClientHandler extends Thread {
     private Socket socket;
     private int clientNumber;
     private FileManager fileManager;
     private FileIOHandler fileIOHandler;
 
+    /**
+     * Constructs a new ClientHandler for a client.
+     * @param socket The socket connected to the client.
+     * @param clientNumber the client's indentifier.
+     */
     public ClientHandler(Socket socket, int clientNumber) {
         this.socket = socket;
         this.clientNumber = clientNumber;
@@ -19,6 +30,16 @@ public class ClientHandler extends Thread {
         this.fileIOHandler = new FileIOHandler();
     }
 
+    /**
+     * Continuously listens for client commands. It processes the commands and sends
+     * appropriate responses back to the client. Commands supported include:
+     * - "ls": Lists files and directories in the current directory.
+     * - "cd": Changes the current directory.
+     * - "mkdir": Creates a new directory.
+     * - "upload": Uploads a file from the client to the server.
+     * - "download": Downloads a file from the server to the client.
+     * - "delete": Deletes a file or directory.
+     */
     public void run(){ // Création de thread qui envoi un message à un client
         try {
             DataInputStream in = new DataInputStream(socket.getInputStream());
@@ -34,6 +55,7 @@ public class ClientHandler extends Thread {
                 String cmdName = commandParts[0];
                 String arg = (commandParts.length > 1) ? commandParts[1] : null;
 
+                // Handle the client's command
                 switch (cmdName) {
                     case "ls":
                         out.writeUTF(fileManager.listDirectory());

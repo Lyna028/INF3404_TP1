@@ -7,13 +7,22 @@ import java.util.Scanner;
 // Application client
 
 /**
- * Client that connects to a server, sends commands, and processes the server's responses.
+ * Client that connects to a server, sends commands, and receive the server's responses.
  * It allows users to interact with a remote file system, supporting commands such as
  * uploading files, downloading files, changing directories, listing files, creating directories,
  * and deleting files. The client runs in a loop, continuously accepting user input until the user types "exit".
  */
 public class Client {
     private static Socket socket;
+
+    /**
+     * Sets up a connection to the server, handles user input, sends commands to the server,
+     * and receives responses. It supports commands like
+     * "upload", "download", "cd", "ls", "mkdir", and "delete".
+     *
+     * @param args arguments
+     * @throws Exception If an error occurs while connecting to the server or during input/output operations.
+     */
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
 
@@ -41,6 +50,7 @@ public class Client {
             String[] commandParts = command.split(" ");
             FileIOHandler fileIOHandler = new FileIOHandler();
 
+            // Handle commands
             switch (commandParts[0]) {
                 case "upload":
                     File fileToUpload = new File(commandParts[1]);

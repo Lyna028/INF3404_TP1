@@ -16,7 +16,7 @@ public class Server {
 
 
     /**
-     * Initializes the server with a specific IP address and port, and listens for incoming client connections.
+     * Initializes the server with a specific IP address and port, and listens for incoming client connections
      * For each new client, a separate `ClientHandler` thread is created to manage the client's requests.
      *
      * @param args arguments

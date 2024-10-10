@@ -1,5 +1,8 @@
 import java.io.*;
 
+/**
+ * Class that manages writing and reading file operations
+ */
 public class FileIOHandler {
     public FileIOHandler() { }
 
